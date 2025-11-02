@@ -3,10 +3,31 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadUsers } from "../../features/users/usersSlice";
 import { showModal } from "../../features/ui/modalSlice";
 import Button from "../common/Button";
+import CommonTable from "../common/CommonTable";
 
 export default function UserList() {
   const dispatch = useDispatch();
   const { list, loading, error } = useSelector((s) => s.users);
+
+  const users = list.map((user) => ({
+    id: user.id,
+    name: user.name,
+    email: user.email
+  }));
+
+  const columns = [
+    { label: "ID", field: "id" },
+    { label: "Name", field: "name" },
+    { label: "Email", field: "email" }
+  ];
+
+  const handleEdit = (user) => {
+    dispatch(showModal({ mode: "edit", props: { user } }));
+  };
+
+  const handleDelete = (user) => {
+    dispatch(showModal({ mode: "confirmDelete", props: { user } }));
+  };
 
   useEffect(() => {
     dispatch(loadUsers());
@@ -50,59 +71,7 @@ export default function UserList() {
         </div>
       ) : (
         <div className="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {list.map((u) => (
-                <tr key={u.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {u.id}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {u.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {u.email}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    <Button
-                      onClick={() =>
-                        dispatch(showModal({ mode: "edit", props: { user: u } }))
-                      }
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs transition-colors"
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      onClick={() =>
-                        dispatch(
-                          showModal({ mode: "confirmDelete", props: { user: u } })
-                        )
-                      }
-                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs transition-colors"
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <CommonTable columns={columns} data={users} onEdit={handleEdit} onDelete={handleDelete} />
         </div>
       )}
     </div>
