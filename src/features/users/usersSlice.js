@@ -7,6 +7,13 @@ export const loadUsers = createAsyncThunk('users/load', async (_, thunkAPI) => {
     const res = await api.fetchUsers();
     return res.data;
   } catch (err) {
+    thunkAPI.dispatch({
+      type: 'toast/addToast',
+      payload: {
+        type: 'error',
+        message: err.response?.data?.message || 'Failed to load users'
+      }
+    });
     return thunkAPI.rejectWithValue(err.response?.data || err.message);
   }
 });
@@ -16,6 +23,13 @@ export const addUser = createAsyncThunk('users/add', async (payload, thunkAPI) =
     const res = await api.createUser(payload);
     return res.data;
   } catch (err) {
+    thunkAPI.dispatch({
+      type: 'toast/addToast',
+      payload: {
+        type: 'error',
+        message: err.response?.data?.message || 'Failed to create user'
+      }
+    });
     return thunkAPI.rejectWithValue(err.response?.data || err.message);
   }
 });
@@ -25,6 +39,13 @@ export const editUser = createAsyncThunk('users/edit', async ({ id, payload }, t
     const res = await api.updateUser(id, payload);
     return res.data;
   } catch (err) {
+    thunkAPI.dispatch({
+      type: 'toast/addToast',
+      payload: {
+        type: 'error',
+        message: err.response?.data?.message || 'Failed to update user'
+      }
+    });
     return thunkAPI.rejectWithValue(err.response?.data || err.message);
   }
 });
@@ -34,6 +55,13 @@ export const removeUser = createAsyncThunk('users/remove', async (id, thunkAPI) 
     await api.deleteUser(id);
     return id;
   } catch (err) {
+    thunkAPI.dispatch({
+      type: 'toast/addToast',
+      payload: {
+        type: 'error',
+        message: err.response?.data?.message || 'Failed to delete user'
+      }
+    });
     return thunkAPI.rejectWithValue(err.response?.data || err.message);
   }
 });

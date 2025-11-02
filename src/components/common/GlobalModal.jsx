@@ -4,6 +4,7 @@ import { closeModal } from '../../features/ui/modalSlice';
 import UserForm from '../users/UserForm';
 import { useDispatch as useReduxDispatch } from 'react-redux';
 import { removeUser } from '../../features/users/usersSlice';
+import { addToast } from '../../features/ui/toastSlice';
 
 export default function GlobalModal() {
   const dispatch = useDispatch();
@@ -18,6 +19,10 @@ export default function GlobalModal() {
     const id = modal.props?.user?.id;
     if (!id) return;
     await usersDispatch(removeUser(id));
+    dispatch(addToast({
+      type: 'success',
+      message: 'User deleted successfully!'
+    }));
     onClose();
   };
 
