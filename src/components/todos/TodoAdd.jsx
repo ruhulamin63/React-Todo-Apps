@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { addTodo } from '../../stores/todoSlice'
+import { addTodo } from '../../app/todoSlice'
 import Button from '../common/Button'
 
 const TodoAdd = () => {
