@@ -5,6 +5,7 @@ import AppRouter from './router/AppRouter.jsx'
 import MainLayout from './layouts/MainLayout.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import ToastContainer from './components/common/ToastContainer.jsx'
+import GlobalModal from './components/common/GlobalModal.jsx'
 
 function App() {
   return (
@@ -15,7 +16,9 @@ function App() {
             <AppRouter />
           </MainLayout>
         </Router>
+        
         <ToastContainer />
+        <GlobalModal />
       </Provider>
     </ThemeProvider>
   )

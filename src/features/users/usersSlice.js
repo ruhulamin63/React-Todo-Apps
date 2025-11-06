@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import * as api from '../../api/usersApi';
+import { api } from '../../services/api';
 
 // Async thunks
 export const loadUsers = createAsyncThunk('users/load', async (_, thunkAPI) => {
   try {
-    const res = await api.fetchUsers();
-    return res.data;
+    const res = await api.getUsers();
+    return res;
   } catch (err) {
     thunkAPI.dispatch({
       type: 'toast/addToast',
@@ -21,7 +21,14 @@ export const loadUsers = createAsyncThunk('users/load', async (_, thunkAPI) => {
 export const addUser = createAsyncThunk('users/add', async (payload, thunkAPI) => {
   try {
     const res = await api.createUser(payload);
-    return res.data;
+    thunkAPI.dispatch({
+      type: 'toast/addToast',
+      payload: {
+        type: 'success',
+        message: 'User created successfully'
+      }
+    });
+    return res;
   } catch (err) {
     thunkAPI.dispatch({
       type: 'toast/addToast',
@@ -37,7 +44,14 @@ export const addUser = createAsyncThunk('users/add', async (payload, thunkAPI) =
 export const editUser = createAsyncThunk('users/edit', async ({ id, payload }, thunkAPI) => {
   try {
     const res = await api.updateUser(id, payload);
-    return res.data;
+    thunkAPI.dispatch({
+      type: 'toast/addToast',
+      payload: {
+        type: 'success',
+        message: 'User updated successfully'
+      }
+    });
+    return res;
   } catch (err) {
     thunkAPI.dispatch({
       type: 'toast/addToast',
