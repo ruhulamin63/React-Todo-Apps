@@ -18,7 +18,21 @@ export default function UserList() {
   const columns = [
     { label: "ID", field: "id" },
     { label: "Name", field: "name" },
-    { label: "Email", field: "email" }
+    { label: "Email", field: "email" },
+    { label: "Status", field: "is_active", 
+      render: (value) => (
+        <span
+            className={`px-2 py-1 rounded-full text-xs font-medium 
+              ${value ? 
+                'bg-green-100 text-green-800' : 
+                'bg-red-100 text-red-800'
+              }`
+            }
+          >
+          {value ? 'Active' : 'Inactive'}
+        </span>
+      )
+    },
   ];
 
   const handleEdit = (user) => {
@@ -28,6 +42,10 @@ export default function UserList() {
   const handleDelete = (user) => {
     dispatch(showModal({ mode: "confirmDelete", props: { user } }));
   };
+  
+  const handleDetails = (user) => {
+    dispatch(showModal({ mode: "details", props: { user } }));
+  }
 
   useEffect(() => {
     dispatch(loadUsers());
@@ -71,7 +89,36 @@ export default function UserList() {
         </div>
       ) : (
         <div className="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
-          <CommonTable columns={columns} data={users} onEdit={handleEdit} onDelete={handleDelete} />
+          <CommonTable 
+            columns={columns} 
+            data={users} 
+            onEdit={handleEdit} 
+            onDelete={handleDelete} 
+            renderActions={(row) => (
+              <>
+                <button
+                  onClick={() => handleDetails(row)}
+                  className="px-3 py-1 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
+                >
+                  Details
+                </button>
+                
+                <button
+                  onClick={() => handleEdit(row)}
+                  className="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                >
+                  Edit
+                </button>
+                
+                <button
+                  onClick={() => handleDelete(row)}
+                  className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                >
+                  Delete
+                </button>
+              </>
+            )}
+          />
         </div>
       )}
     </div>

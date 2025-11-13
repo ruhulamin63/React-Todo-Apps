@@ -1,5 +1,5 @@
-import TodoAdd from '../components/todos/TodoAdd'
-import TodoList from '../components/todos/TodoList'
+import TodoAdd from '../../components/todos/TodoAdd'
+import TodoList from '../../components/todos/TodoList'
 
 const Todos = () => {
   return (
