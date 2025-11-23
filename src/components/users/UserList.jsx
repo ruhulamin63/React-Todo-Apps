@@ -4,6 +4,7 @@ import { loadUsers } from "../../features/users/usersSlice";
 import { showModal } from "../../features/ui/modalSlice";
 import Button from "../common/Button";
 import CommonTable from "../common/CommonTable";
+import { USER_MODAL_REGISTRY_KEY } from "./userModalRegistry";
 
 export default function UserList() {
   const dispatch = useDispatch();
@@ -12,40 +13,90 @@ export default function UserList() {
   const users = list.map((user) => ({
     id: user.id,
     name: user.name,
-    email: user.email
+    email: user.email,
+    status: 'Active'
   }));
 
   const columns = [
     { label: "ID", field: "id" },
     { label: "Name", field: "name" },
     { label: "Email", field: "email" },
-    { label: "Status", field: "is_active", 
-      render: (value) => (
-        <span
-            className={`px-2 py-1 rounded-full text-xs font-medium 
-              ${value ? 
-                'bg-green-100 text-green-800' : 
-                'bg-red-100 text-red-800'
-              }`
-            }
+    { 
+      label: "Status", 
+      field: "status",
+    },
+    {
+      label: "Actions",
+      field: "actions",
+      render: (value, row) => (
+        <div className="flex gap-2">
+          <Button
+            onClick={() => handleDetails(row)}
+            className="px-3 py-1 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition text-sm"
           >
-          {value ? 'Active' : 'Inactive'}
-        </span>
+            Details
+          </Button>
+          
+          <Button
+            onClick={() => handleEdit(row)}
+            className="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm"
+          >
+            Edit
+          </Button>
+          
+          <Button
+            onClick={() => handleDelete(row)}
+            className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm"
+          >
+            Delete
+          </Button>
+        </div>
       )
     },
   ];
-
-  const handleEdit = (user) => {
-    dispatch(showModal({ mode: "edit", props: { user } }));
+  
+  const handleCreate = () => {
+    dispatch(showModal({ 
+      mode: "create",
+      props: {
+        title: 'Create User',
+        registryKey: USER_MODAL_REGISTRY_KEY
+      }
+    }));
   };
 
-  const handleDelete = (user) => {
-    dispatch(showModal({ mode: "confirmDelete", props: { user } }));
+  const handleEdit = (user) => {
+    dispatch(showModal({ 
+      mode: "edit", 
+      props: { 
+        user,
+        title: 'Edit User',
+        registryKey: USER_MODAL_REGISTRY_KEY
+      } 
+    }));
   };
   
   const handleDetails = (user) => {
-    dispatch(showModal({ mode: "details", props: { user } }));
-  }
+    dispatch(showModal({ 
+      mode: "details",
+      props: { 
+        user,
+        title: 'User Details',
+        registryKey: USER_MODAL_REGISTRY_KEY
+      }
+    }));
+  };
+
+  const handleDelete = (user) => {
+    dispatch(showModal({ 
+      mode: "confirmDelete", 
+      props: { 
+        user,
+        title: 'Delete User',
+        registryKey: USER_MODAL_REGISTRY_KEY
+      } 
+    }));
+  };
 
   useEffect(() => {
     dispatch(loadUsers());
@@ -68,7 +119,7 @@ export default function UserList() {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Users</h2>
         <Button
-          onClick={() => dispatch(showModal({ mode: "create" }))}
+          onClick={() => handleCreate()}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
         >
           + Add User
@@ -80,44 +131,13 @@ export default function UserList() {
           <div className="text-gray-400 text-6xl mb-4">👥</div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No users found</h3>
           <p className="text-gray-600 mb-4">Get started by adding your first user.</p>
-          <Button
-            onClick={() => dispatch(showModal({ mode: "create" }))}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition-colors"
-          >
-            Add First User
-          </Button>
         </div>
       ) : (
         <div className="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
           <CommonTable 
             columns={columns} 
             data={users} 
-            onEdit={handleEdit} 
-            onDelete={handleDelete} 
-            renderActions={(row) => (
-              <>
-                <button
-                  onClick={() => handleDetails(row)}
-                  className="px-3 py-1 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
-                >
-                  Details
-                </button>
-                
-                <button
-                  onClick={() => handleEdit(row)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-                >
-                  Edit
-                </button>
-                
-                <button
-                  onClick={() => handleDelete(row)}
-                  className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-                >
-                  Delete
-                </button>
-              </>
-            )}
+            showActions={false}
           />
         </div>
       )}

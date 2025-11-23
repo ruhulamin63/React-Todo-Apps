@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   open: false,
-  mode: null, // 'create' | 'edit' | 'confirmDelete'
+  mode: null, // 'create' | 'edit' | 'confirmDelete' | 'details'.
   props: null, // arbitrary props e.g. { user }
 };
 
