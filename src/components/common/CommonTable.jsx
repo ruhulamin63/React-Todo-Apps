@@ -36,13 +36,13 @@ export default function CommonTable({
           {data.length > 0 ? (
             data.map((row, rowIndex) => (
               <tr
-                key={rowIndex}
+                key={row.id || rowIndex}
                 className="border-b hover:bg-gray-50 transition duration-200"
               >
                 {columns.map((col, colIndex) => (
                   <td key={colIndex} className="px-6 py-4">
                     {/* If custom render exists, use it */}
-                    {col.render ? col.render(row[col.field], row) : row[col.field]}
+                    {col.render ? col.render(row[col.field], row, rowIndex) : row[col.field]}
                   </td>
                 ))}
 

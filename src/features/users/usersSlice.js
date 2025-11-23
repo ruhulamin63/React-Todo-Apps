@@ -20,7 +20,7 @@ export const loadUsers = createAsyncThunk('users/load', async (_, thunkAPI) => {
 
 export const addUser = createAsyncThunk('users/add', async (payload, thunkAPI) => {
   try {
-    const res = await api.createUser(payload);
+    await api.createUser(payload);
     thunkAPI.dispatch({
       type: 'toast/addToast',
       payload: {
@@ -28,7 +28,10 @@ export const addUser = createAsyncThunk('users/add', async (payload, thunkAPI) =
         message: 'User created successfully'
       }
     });
-    return res;
+    // Return the original payload with a unique ID instead of the API response
+    return {
+      ...payload,
+    };
   } catch (err) {
     thunkAPI.dispatch({
       type: 'toast/addToast',
@@ -43,7 +46,7 @@ export const addUser = createAsyncThunk('users/add', async (payload, thunkAPI) =
 
 export const editUser = createAsyncThunk('users/edit', async ({ id, payload }, thunkAPI) => {
   try {
-    const res = await api.updateUser(id, payload);
+    await api.updateUser(id, payload);
     thunkAPI.dispatch({
       type: 'toast/addToast',
       payload: {
@@ -51,7 +54,10 @@ export const editUser = createAsyncThunk('users/edit', async ({ id, payload }, t
         message: 'User updated successfully'
       }
     });
-    return res;
+    return { 
+      id: parseInt(id), 
+      ...payload, // Use the payload we sent instead of API response
+    };
   } catch (err) {
     thunkAPI.dispatch({
       type: 'toast/addToast',
@@ -96,11 +102,16 @@ const usersSlice = createSlice({
       .addCase(loadUsers.fulfilled, (s, a) => { s.loading = false; s.list = a.payload; })
       .addCase(loadUsers.rejected, (s, a) => { s.loading = false; s.error = a.payload; })
 
-      .addCase(addUser.fulfilled, (s, a) => { s.list.unshift(a.payload); })
+      .addCase(addUser.fulfilled, (s, a) => { 
+        s.list.unshift(a.payload);
+      })
       .addCase(addUser.rejected, (s, a) => { s.error = a.payload; })
 
       .addCase(editUser.fulfilled, (s, a) => {
-        s.list = s.list.map(u => (u.id === a.payload.id ? a.payload : u));
+        const index = s.list.findIndex(u => u.id == a.payload.id);
+        if (index !== -1) {
+          s.list[index] = { ...s.list[index], ...a.payload };
+        }
       })
       .addCase(editUser.rejected, (s, a) => { s.error = a.payload; })
 

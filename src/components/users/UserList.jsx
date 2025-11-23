@@ -11,20 +11,16 @@ export default function UserList() {
   const { list, loading, error } = useSelector((s) => s.users);
 
   const users = list.map((user) => ({
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    status: 'Active'
+    ...user,
   }));
 
   const columns = [
-    { label: "ID", field: "id" },
+    { label: "ID",
+      field: "id",
+      render: (value, row, index) => <span className="font-mono">{index + 1}</span>
+    },
     { label: "Name", field: "name" },
     { label: "Email", field: "email" },
-    { 
-      label: "Status", 
-      field: "status",
-    },
     {
       label: "Actions",
       field: "actions",

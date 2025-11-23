@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUser, editUser } from "../../features/users/usersSlice";
-import { addToast } from "../../features/ui/toastSlice";
 
 export default function UserForm({ user = null, onDone = () => {} }) {
   const dispatch = useDispatch();
@@ -67,16 +66,8 @@ export default function UserForm({ user = null, onDone = () => {} }) {
 
       if (user?.id) {
         await dispatch(editUser({ id: user.id, payload })).unwrap();
-        dispatch(addToast({
-          type: 'success',
-          message: 'User updated successfully!'
-        }));
       } else {
         await dispatch(addUser(payload)).unwrap();
-        dispatch(addToast({
-          type: 'success',
-          message: 'User created successfully!'
-        }));
       }
       onDone();
     } catch (err) {
